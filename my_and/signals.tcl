@@ -1,6 +1,6 @@
 # Richard James Howe
 # TCL Script for GTKWave on tb.ghw
-#
+# modified RgC
 
 set bits 15
 

@@ -1,6 +1,6 @@
 # Richard James Howe
 # TCL Script for GTKWave on tb.ghw
-#
+# modified RgC
 
 set bits 15
 
@@ -8,9 +8,10 @@ gtkwave::/Edit/Set_Trace_Max_Hier 0
 gtkwave::/Time/Zoom/Zoom_Best_Fit
 
 set names {
-	top.my_and_tb.y
-	top.my_and_tb.a
-	top.my_and_tb.b
+	top.check_tb.r
+	top.check_tb.y
+	top.check_tb.g
+	top.check_tb.dut.ok
 }
 
 gtkwave::addSignalsFromList $names
