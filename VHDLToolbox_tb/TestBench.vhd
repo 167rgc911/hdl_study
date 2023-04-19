@@ -67,10 +67,7 @@ begin
 	begin
 		if RST = '1' then
 		else
-			OUT1_ACK <= '0';
-			if OUT1_STB = '1' then
-				OUT1_ACK <= '1';
-			end if;
+			OUT1_ACK <= OUT1_STB;
 		end if;
 	end process;
 
