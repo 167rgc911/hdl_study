@@ -42,23 +42,21 @@ begin
 		variable cnt : integer := 0;
 	begin
 		if RST = '1' then
-		else
-			if CLK = '1' then
-				if cnt < LEN-1 then
-					if IN1_ACK = '1' then
-						cnt := cnt + 1;
-					end if;
-					IN1 <= std_logic_vector(to_unsigned(cnt, BITS));
-					IN1_STB <= '1';
-				else
-					if IN1_ACK = '0' then
-						IN1_STB <= '0';
-					end if;
-				end if;
-			else
+		elsif CLK = '1' then
+			if cnt < LEN-1 then
 				if IN1_ACK = '1' then
+					cnt := cnt + 1;
+				end if;
+				IN1 <= std_logic_vector(to_unsigned(cnt, BITS));
+				IN1_STB <= '1';
+			else
+				if IN1_ACK = '0' then
 					IN1_STB <= '0';
 				end if;
+			end if;
+		else
+			if IN1_ACK = '1' then
+				IN1_STB <= '0';
 			end if;
 		end if;
 	end process;
