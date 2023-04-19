@@ -19,6 +19,8 @@ architecture behaviour of TestBench is
         signal OUT1     : std_logic_vector(BITS-1 downto 0);
         signal OUT1_STB : std_logic;
         signal OUT1_ACK : std_logic;
+
+        signal OUT2_ACK : std_logic;
 begin
 
 	RST <= '1', '0' after 100 ns;
@@ -37,6 +39,16 @@ begin
 				OUT1,
 				OUT1_STB,
 				OUT1_ACK);
+
+	c0 : entity work.console_output
+			generic map(
+				BITS => BITS)
+			port map(
+				CLK,
+				RST,
+				IN1 => OUT1,
+				IN1_STB => OUT1_STB,
+				IN1_ACK => OUT2_ACK);
 
 	writer: process(CLK, RST)
 		variable cnt : integer := 0;
