@@ -4,8 +4,8 @@ OBJF = \
 ../../tool_VHDLToolbox/counter.o\
 ../../tool_VHDLToolbox/cout.o\
 ../../tool_VHDLToolbox/fifo.o\
-TestBench.o
-BINF = TestBench
+testbench.o
+BINF = testbench
 
 GHDL_OPTS =
 #GHDL_OPTS = --std=93
