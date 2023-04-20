@@ -13,6 +13,7 @@ GHDL_OPTS =
 YOSYS_DATDIR = $(shell yosys-config --datdir)
 
 all: $(BINF)
+	- @rm $(BINF).o
 #all: $(BINF).ghw
 
 %.o:%.vhd
@@ -28,7 +29,7 @@ viewer: $(BINF).ghw
 	gtkwave -S signals.tcl -f $(BINF).ghw
 
 clean:
-	- @rm $(BINF) $(BINF).ghw *.o work-obj93.cf
+	- @rm $(BINF) *.o work-obj??.cf
         
 # sample only might not work
 verilog:
