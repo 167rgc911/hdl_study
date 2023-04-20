@@ -30,10 +30,10 @@ viewer: $(BINF).ghw
 clean:
 	- @rm $(BINF) $(BINF).ghw *.o work-obj93.cf
         
-#verilog:
-#       ghdl --synth --out=verilog my_and > my_and.v
-#       ghdl --synth --out=verilog my_and_tb > my_and_tb.v
+# sample only might not work
+verilog:
+	ghdl --synth --out=verilog ${BINF} > ${BINF}.v
 
-#dot:
-#       yosys -m $(YOSYS_DATDIR)/plugins/ghdl.so -p 'ghdl my_and; write_json my_and.json'
-#       netlistsvg my_and.json -o my_and.svg
+netlist:
+	yosys -m $(YOSYS_DATDIR)/plugins/ghdl.so -p 'ghdl $(BINF); write_json $(BINF).json'
+	netlistsvg ${BINF}.json -o ${BINF}.svg
