@@ -1,84 +1,96 @@
-library IEEE;
-use IEEE.std_logic_1164.all;
-use ieee.numeric_std.all;
+library ieee;
+  use ieee.std_logic_1164.all;
+  use ieee.numeric_std.all;
 
 library work;
 
-entity TestBench is
-end entity TestBench;
+entity testbench is
+end entity testbench;
 
-architecture behaviour of TestBench is
-	signal BITS	: integer := 8;
-	signal LEN	: integer := 19;
+architecture behaviour of testbench is
 
-        signal CLK      : std_logic := '0';
-        signal RST      : std_logic;
-        signal IN1      : std_logic_vector(BITS-1 downto 0);
-        signal IN1_STB  : std_logic;
-        signal IN1_ACK  : std_logic;
-        signal OUT1     : std_logic_vector(BITS-1 downto 0);
-        signal OUT1_STB : std_logic;
-        signal OUT1_ACK : std_logic;
+  constant bits : integer := 8;
+  constant len  : integer := 19;
 
-        signal OUT2_ACK : std_logic;
+  signal clk      : std_logic := '0';
+  signal rst      : std_logic;
+  signal in1      : std_logic_vector(bits - 1 downto 0);
+  signal in1_stb  : std_logic;
+  signal in1_ack  : std_logic;
+  signal out1     : std_logic_vector(bits - 1 downto 0);
+  signal out1_stb : std_logic;
+  signal out1_ack : std_logic;
+
+  signal out2_ack : std_logic;
+
 begin
 
-	RST <= '1', '0' after 100 ns;
-	CLK <= not CLK after 50 ns;
+  rst <= '1', '0' after 100 ns;
+  clk <= not clk after 50 ns;
 
-	f1 : entity work.FIFO
-			generic map(
-				BITS => BITS,
-				DEPTH => 8)
-			port map(
-				CLK,
-				RST,
-				IN1,
-				IN1_STB,
-				IN1_ACK,
-				OUT1,
-				OUT1_STB,
-				OUT1_ACK);
+  f1 : entity work.fifo
+    generic map (
+      bits  => bits,
+      depth => 8
+    )
+    port map (
+				clk,
+				rst,
+				in1,
+				in1_stb,
+				in1_ack,
+				out1,
+				out1_stb,
+				out1_ack
+    );
 
-	c0 : entity work.console_output
-			generic map(
-				BITS => BITS)
-			port map(
-				CLK,
-				RST,
-				IN1 => OUT1,
-				IN1_STB => OUT1_STB,
-				IN1_ACK => OUT2_ACK);
+  c0 : entity work.console_output
+    generic map (
+      bits => bits
+    )
+    port map (
+				clk,
+				rst,
+      in1     => out1,
+      in1_stb => out1_stb,
+      in1_ack => out2_ack
+    );
 
-	writer: process(CLK, RST)
-		variable cnt : integer := 0;
-	begin
-		if RST = '1' then
-		elsif CLK = '1' then
-			if cnt < LEN-1 then
-				if IN1_ACK = '1' then
-					cnt := cnt + 1;
-				end if;
-				IN1 <= std_logic_vector(to_unsigned(cnt, BITS));
-				IN1_STB <= '1';
-			else
-				if IN1_ACK = '0' then
-					IN1_STB <= '0';
-				end if;
-			end if;
-		else
-			if IN1_ACK = '1' then
-				IN1_STB <= '0';
-			end if;
-		end if;
-	end process;
+  writer : process (clk, rst) is
 
-	reader: process(CLK, RST)
-	begin
-		if RST = '1' then
-		else
-			OUT1_ACK <= OUT1_STB;
-		end if;
-	end process;
+    variable cnt : integer := 0;
 
-end;
+  begin
+
+    if (rst = '1') then
+    elsif (clk = '1') then
+      if (cnt < len - 1) then
+        if (in1_ack = '1') then
+          cnt := cnt + 1;
+        end if;
+        in1     <= std_logic_vector(to_unsigned(cnt, bits));
+        in1_stb <= '1';
+      else
+        if (in1_ack = '0') then
+          in1_stb <= '0';
+        end if;
+      end if;
+    else
+      if (in1_ack = '1') then
+        in1_stb <= '0';
+      end if;
+    end if;
+
+  end process writer;
+
+  reader : process (clk, rst) is
+  begin
+
+    if (rst = '1') then
+    else
+      out1_ack <= out1_stb;
+    end if;
+
+  end process reader;
+
+end architecture behaviour;
