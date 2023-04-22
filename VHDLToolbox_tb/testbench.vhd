@@ -23,8 +23,6 @@ architecture behaviour of testbench is
   signal out1_stb : std_logic;
   signal out1_ack : std_logic;
 
-  signal out2_ack : std_logic;
-
 begin
 
   rst <= '1', '0' after 100 ns;
@@ -39,66 +37,47 @@ begin
 
   end process clk0;
 
-  f1 : entity work.fifo
+  counter0 : entity work.counter
+    generic map (
+      bits  => bits,
+      start => 0,
+      stop  => 7,
+      step  => 1
+    )
+    port map (
+      clk      => clk,
+      rst      => rst,
+      out1     => in1,
+      out1_stb => in1_stb,
+      out1_ack => in1_ack
+    );
+
+  fifo0 : entity work.fifo
     generic map (
       bits  => bits,
       depth => 8
     )
     port map (
-				clk,
-				rst,
-				in1,
-				in1_stb,
-				in1_ack,
-				out1,
-				out1_stb,
-				out1_ack
+      clk      => clk,
+      rst      => rst,
+      in1      => in1,
+      in1_stb  => in1_stb,
+      in1_ack  => in1_ack,
+      out1     => out1,
+      out1_stb => out1_stb,
+      out1_ack => out1_ack
     );
 
-  c0 : entity work.console_output
+  con0 : entity work.console_output
     generic map (
       bits => bits
     )
     port map (
-				clk,
-				rst,
+      clk     => clk,
+      rst     => rst,
       in1     => out1,
       in1_stb => out1_stb,
-      in1_ack => out2_ack
+      in1_ack => out1_ack
     );
-
-
-  begin
-
-    if (rst = '1') then
-    elsif (clk = '1') then
-      if (cnt < len - 1) then
-        if (in1_ack = '1') then
-          cnt := cnt + 1;
-        end if;
-        in1     <= std_logic_vector(to_unsigned(cnt, bits));
-        in1_stb <= '1';
-      else
-        if (in1_ack = '0') then
-          in1_stb <= '0';
-        end if;
-      end if;
-    else
-      if (in1_ack = '1') then
-        in1_stb <= '0';
-      end if;
-    end if;
-
-  end process writer;
-
-  reader : process (clk, rst) is
-  begin
-
-    if (rst = '1') then
-    else
-      out1_ack <= out1_stb;
-    end if;
-
-  end process reader;
 
 end architecture behaviour;
