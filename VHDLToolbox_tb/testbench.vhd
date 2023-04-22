@@ -12,7 +12,9 @@ architecture behaviour of testbench is
   constant bits : integer := 8;
   constant len  : integer := 19;
 
-  signal clk      : std_logic := '0';
+  constant clk_t : time := 100 ns;
+
+  signal clk      : std_logic;
   signal rst      : std_logic;
   signal in1      : std_logic_vector(bits - 1 downto 0);
   signal in1_stb  : std_logic;
@@ -26,7 +28,16 @@ architecture behaviour of testbench is
 begin
 
   rst <= '1', '0' after 100 ns;
-  clk <= not clk after 50 ns;
+
+  clk0 : process is
+  begin
+
+    clk <= '0';
+    wait for clk_t / 2;
+    clk <= '1';
+    wait for clk_t / 2;
+
+  end process clk0;
 
   f1 : entity work.fifo
     generic map (
@@ -56,9 +67,6 @@ begin
       in1_ack => out2_ack
     );
 
-  writer : process (clk, rst) is
-
-    variable cnt : integer := 0;
 
   begin
 
